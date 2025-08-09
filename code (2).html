@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rommé Strafpunkte Zähler</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .card {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    .history-item:nth-child(odd) {
+      background-color: #f9fafb;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <div class="container mx-auto px-4 py-8 max-w-3xl">
+    <!-- Header -->
+    <header class="mb-8 text-center">
+      <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f276174e-69fc-4bae-a587-233f85c55a01.png" alt="Rommé Spielkarten mit Ass, König, Dame und Bube auf grünem Filztisch" class="mx-auto mb-4 rounded-lg max-h-32 object-cover">
+      <h1 class="text-3xl font-bold text-gray-800">Rommé Strafpunkte</h1>
+      <p class="text-gray-600 mt-2">Verfolge die Strafpunkte deiner Rommé-Runden</p>
+    </header>
+
+    <!-- Hauptbereich -->
+    <main>
+      <!-- Spieler und Punkte eingeben -->
+      <section class="card bg-white rounded-lg p-6 mb-6">
+        <h2 class="text-xl font-semibold mb-4 text-gray-700">Strafpunkte hinzufügen</h2>
+        
+        <form id="pointsForm" class="space-y-4">
+          <div>
+            <label for="player" class="block text-sm font-medium text-gray-700 mb-1">Spieler</label>
+            <select id="player" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+              <!-- Wird per JavaScript befüllt -->
+            </select>
+          </div>
+          
+          <div>
+            <label for="points" class="block text-sm font-medium text-gray-700 mb-1">Strafpunkte diese Runde</label>
+            <input type="number" id="points" min="0" step="1" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+          </div>
+          
+          <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Punkte hinzufügen
+          </button>
+        </form>
+      </section>
+      
+      <!-- Neuen Spieler hinzufügen -->
+      <section class="card bg-white rounded-lg p-6 mb-6">
+        <h2 class="text-xl font-semibold mb-4 text-gray-700">Neuen Spieler hinzufügen</h2>
+        
+        <form id="addPlayerForm" class="flex space-x-2">
+          <input type="text" id="newPlayer" placeholder="Spielername" class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+          <button type="submit" class="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+            Hinzufügen
+          </button>
+        </form>
+      </section>
+      
+      <!-- Podium -->
+      <section class="card bg-white rounded-lg p-6 mb-6">
+        <h2 class="text-xl font-semibold mb-4 text-gray-700">Podium</h2>
+        <div class="flex items-end justify-center space-x-4 mb-6" id="podium">
+          <!-- Platz 2 (Silber) -->
+          <div class="flex flex-col items-center w-1/3" id="secondPlace">
+            <div class="bg-gray-300 w-full h-24 flex items-center justify-center rounded-t">
+              <span class="text-2xl font-bold">2</span>
+            </div>
+            <div class="text-center mt-2">
+              <div class="font-medium">-</div>
+              <div class="text-sm text-gray-500">0 Punkte</div>
+            </div>
+          </div>
+          
+          <!-- Platz 1 (Gold) -->
+          <div class="flex flex-col items-center w-1/3" id="firstPlace">
+            <div class="bg-yellow-400 w-full h-32 flex items-center justify-center rounded-t">
+              <span class="text-2xl font-bold">1</span>
+            </div>
+            <div class="text-center mt-2">
+              <div class="font-medium">-</div>
+              <div class="text-sm text-gray-500">0 Punkte</div>
+            </div>
+          </div>
+          
+          <!-- Platz 3 (Bronze) -->
+          <div class="flex flex-col items-center w-1/3" id="thirdPlace">
+            <div class="bg-yellow-700 w-full h-16 flex items-center justify-center rounded-t">
+              <span class="text-2xl font-bold">3</span>
+            </div>
+            <div class="text-center mt-2">
+              <div class="font-medium">-</div>
+              <div class="text-sm text-gray-500">0 Punkte</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Punkteübersicht -->
+      <section class="card bg-white rounded-lg p-6 mb-6">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-semibold text-gray-700">Aktuelle Punkte</h2>
+          <button id="resetAll" class="text-sm bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+            Alles zurücksetzen
+          </button>
+        </div>
+        
+        <div id="currentPoints" class="space-y-2">
+          <!-- Wird per JavaScript befüllt -->
+        </div>
+      </section>
+      
+      <!-- Verlauf -->
+      <section class="card bg-white rounded-lg p-6">
+        <h2 class="text-xl font-semibold mb-4 text-gray-700">Verlauf</h2>
+        
+        <div id="history" class="divide-y divide-gray-200">
+          <!-- Wird per JavaScript befüllt -->
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Datenstruktur
+    let players = JSON.parse(localStorage.getItem('rommePlayers')) || ['Max', 'Anna', 'Tom', 'Lisa'];
+    let points = JSON.parse(localStorage.getItem('rommePoints')) || {};
+    let history = JSON.parse(localStorage.getItem('rommeHistory')) || [];
+    
+    // DOM-Elemente
+    const playerSelect = document.getElementById('player');
+    const pointsForm = document.getElementById('pointsForm');
+    const addPlayerForm = document.getElementById('addPlayerForm');
+    const newPlayerInput = document.getElementById('newPlayer');
+    const currentPointsDiv = document.getElementById('currentPoints');
+    const historyDiv = document.getElementById('history');
+    const resetAllBtn = document.getElementById('resetAll');
+    
+    // Initialisierung
+    function init() {
+      renderPlayerSelect();
+      renderCurrentPoints();
+      renderHistory();
+      
+      // Initialisiere Punkte für neue Spieler
+      players.forEach(player => {
+        if (!points[player]) {
+          points[player] = 0;
+        }
+      });
+      
+      saveData();
+    }
+    
+    // Spieler-Select befüllen
+    function renderPlayerSelect() {
+      playerSelect.innerHTML = '';
+      players.forEach(player => {
+        const option = document.createElement('option');
+        option.value = player;
+        option.textContent = player;
+        playerSelect.appendChild(option);
+      });
+    }
+    
+    // Aktuelle Punkte anzeigen
+    function renderCurrentPoints() {
+      currentPointsDiv.innerHTML = '';
+      
+      // Sortiere nach Punkten (aufsteigend - wenigste Punkte zuerst)
+      const sortedPlayers = Object.keys(points).sort((a, b) => points[a] - points[b]);
+      
+      // Aktualisiere Podium
+      updatePodium(sortedPlayers);
+      
+      sortedPlayers.forEach(player => {
+        const pointItem = document.createElement('div');
+        pointItem.className = 'flex justify-between items-center py-2 px-3 rounded';
+        pointItem.innerHTML = `
+          <div class="flex items-center">
+            <span class="font-medium">${player}</span>
+            <button onclick="removePlayer('${player}')" class="ml-2 text-red-500 hover:text-red-700">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+              </svg>
+            </button>
+          </div>
+          <span class="font-bold ${points[player] >= 100 ? 'text-red-600' : 'text-gray-800'}">${points[player]} Punkte</span>
+        `;
+        currentPointsDiv.appendChild(pointItem);
+      });
+    }
+    
+    // Verlauf anzeigen
+    function renderHistory() {
+      historyDiv.innerHTML = '';
+      
+      history.forEach(item => {
+        const historyItem = document.createElement('div');
+        historyItem.className = 'history-item py-3 px-3';
+        historyItem.innerHTML = `
+          <div class="flex justify-between items-center">
+            <span class="font-medium">${item.player}</span>
+            <span class="text-gray-600 text-sm">${formatDate(new Date(item.timestamp))}</span>
+          </div>
+          <div class="text-gray-700 mt-1">+${item.points} Punkte (Gesamt: ${item.totalPoints})</div>
+        `;
+        historyDiv.appendChild(historyItem);
+      });
+    }
+    
+    // Podium aktualisieren
+    function updatePodium(players) {
+      const firstPlace = document.getElementById('firstPlace');
+      const secondPlace = document.getElementById('secondPlace');
+      const thirdPlace = document.getElementById('thirdPlace');
+      
+      firstPlace.querySelector('div:nth-child(2) div:first-child').textContent = players[0] || '-';
+      firstPlace.querySelector('div:nth-child(2) div:last-child').textContent = players[0] ? `${points[players[0]]} Punkte` : '0 Punkte';
+      
+      if (players.length > 1) {
+        secondPlace.querySelector('div:nth-child(2) div:first-child').textContent = players[1];
+        secondPlace.querySelector('div:nth-child(2) div:last-child').textContent = `${points[players[1]]} Punkte`;
+      }
+      
+      if (players.length > 2) {
+        thirdPlace.querySelector('div:nth-child(2) div:first-child').textContent = players[2];
+        thirdPlace.querySelector('div:nth-child(2) div:last-child').textContent = `${points[players[2]]} Punkte`;
+      }
+    }
+    
+    // Datum formatieren
+    function formatDate(date) {
+      return new Intl.DateTimeFormat('de-DE', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }).format(date);
+    }
+    
+    // Daten speichern
+    function saveData() {
+      localStorage.setItem('rommePlayers', JSON.stringify(players));
+      localStorage.setItem('rommePoints', JSON.stringify(points));
+      localStorage.setItem('rommeHistory', JSON.stringify(history));
+    }
+    
+    // Event-Listener
+    pointsForm.addEventListener('submit', e => {
+      e.preventDefault();
+      
+      const player = playerSelect.value;
+      const pointsToAdd = parseInt(document.getElementById('points').value);
+      
+      // Punkte aktualisieren
+      points[player] = (points[player] || 0) + pointsToAdd;
+      
+      // Eintrag im Verlauf hinzufügen
+      history.unshift({
+        player,
+        points: pointsToAdd,
+        totalPoints: points[player],
+        timestamp: new Date().toISOString()
+      });
+      
+      // Auf 100 Einträge begrenzen
+      if (history.length > 100) {
+        history.pop();
+      }
+      
+      saveData();
+      renderCurrentPoints();
+      renderHistory();
+      
+      // Formular zurücksetzen
+      document.getElementById('points').value = '';
+      document.getElementById('points').focus();
+    });
+    
+    addPlayerForm.addEventListener('submit', e => {
+      e.preventDefault();
+      
+      const playerName = newPlayerInput.value.trim();
+      
+      if (playerName && !players.includes(playerName)) {
+        players.push(playerName);
+        points[playerName] = 0;
+        
+        saveData();
+        renderPlayerSelect();
+        renderCurrentPoints();
+        
+        // Formular zurücksetzen
+        newPlayerInput.value = '';
+        newPlayerInput.focus();
+      } else if (players.includes(playerName)) {
+        alert('Dieser Spieler existiert bereits!');
+      }
+    });
+    
+    resetAllBtn.addEventListener('click', () => {
+      if (confirm('Möchtest du wirklich alle Punkte und den Verlauf zurücksetzen?')) {
+        players = ['Max', 'Anna', 'Tom', 'Lisa'];
+        points = {};
+        players.forEach(player => { points[player] = 0; });
+        history = [];
+        
+        saveData();
+        init();
+      }
+    });
+    
+    // Spieler entfernen
+    function removePlayer(playerToRemove) {
+      const player = playerToRemove || document.getElementById('removePlayerSelect').value;
+      
+      if (player && confirm(`${player} wirklich entfernen?\nAlle Punkte dieses Spielers werden gelöscht!`)) {
+        players = players.filter(p => p !== player);
+        delete points[player];
+        history = history.filter(h => h.player !== player);
+        saveData();
+        init();
+      }
+    }
+
+    // Spieler Select für Entfernen befüllen
+    function renderRemovePlayerSelect() {
+      const select = document.getElementById('removePlayerSelect');
+      select.innerHTML = '<option value="">Spieler wählen</option>';
+      players.forEach(player => {
+        const option = document.createElement('option');
+        option.value = player;
+        option.textContent = player;
+        select.appendChild(option);
+      });
+    }
+
+    // Event Listener für Remove Button
+    document.getElementById('removePlayerBtn').addEventListener('click', removePlayer);
+
+    // Init erweitern
+    function init() {
+      renderPlayerSelect();
+      renderRemovePlayerSelect();
+      renderCurrentPoints();
+      renderHistory();
+      
+      // Initialisiere Punkte für neue Spieler
+      players.forEach(player => {
+        if (!points[player]) {
+          points[player] = 0;
+        }
+      });
+      
+      saveData();
+    }
+
+    // App initialisieren
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
+
