@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rommé Strafpunkte Zähler</title>
+  <title>Rome Point-Counter</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
@@ -23,8 +23,8 @@
     <!-- Header -->
     <header class="mb-8 text-center">
       <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f276174e-69fc-4bae-a587-233f85c55a01.png" alt="Rommé Spielkarten mit Ass, König, Dame und Bube auf grünem Filztisch" class="mx-auto mb-4 rounded-lg max-h-32 object-cover">
-      <h1 class="text-3xl font-bold text-gray-800">Rommé Strafpunkte</h1>
-      <p class="text-gray-600 mt-2">Verfolge die Strafpunkte deiner Rommé-Runden</p>
+      <h1 class="text-3xl font-bold text-gray-800">Rome Point-Counter</h1>
+      <p class="text-gray-600 mt-2">Track penalty points for your Rome games</p>
     </header>
 
     <!-- Hauptbereich -->
@@ -35,14 +35,14 @@
         
         <form id="pointsForm" class="space-y-4">
           <div>
-            <label for="player" class="block text-sm font-medium text-gray-700 mb-1">Spieler</label>
+            <label for="player" class="block text-sm font-medium text-gray-700 mb-1">Player</label>
             <select id="player" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
               <!-- Wird per JavaScript befüllt -->
             </select>
           </div>
           
           <div>
-            <label for="points" class="block text-sm font-medium text-gray-700 mb-1">Strafpunkte diese Runde</label>
+            <label for="points" class="block text-sm font-medium text-gray-700 mb-1">Points this round</label>
             <input type="number" id="points" min="0" step="1" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
           </div>
           
@@ -54,19 +54,19 @@
       
       <!-- Neuen Spieler hinzufügen -->
       <section class="card bg-white rounded-lg p-6 mb-6">
-        <h2 class="text-xl font-semibold mb-4 text-gray-700">Neuen Spieler hinzufügen</h2>
+        <h2 class="text-xl font-semibold mb-4 text-gray-700">Add new player</h2>
         
         <form id="addPlayerForm" class="flex space-x-2">
-          <input type="text" id="newPlayer" placeholder="Spielername" class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+          <input type="text" id="newPlayer" placeholder="Player name" class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
           <button type="submit" class="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-            Hinzufügen
+            Add
           </button>
         </form>
       </section>
       
       <!-- Podium -->
       <section class="card bg-white rounded-lg p-6 mb-6">
-        <h2 class="text-xl font-semibold mb-4 text-gray-700">Podium</h2>
+        <h2 class="text-xl font-semibold mb-4 text-gray-700">Leaderboard</h2>
         <div class="flex items-end justify-center space-x-4 mb-6" id="podium">
           <!-- Platz 2 (Silber) -->
           <div class="flex flex-col items-center w-1/3" id="secondPlace">
@@ -75,7 +75,7 @@
             </div>
             <div class="text-center mt-2">
               <div class="font-medium">-</div>
-              <div class="text-sm text-gray-500">0 Punkte</div>
+              <div class="text-sm text-gray-500">0 points</div>
             </div>
           </div>
           
@@ -86,7 +86,7 @@
             </div>
             <div class="text-center mt-2">
               <div class="font-medium">-</div>
-              <div class="text-sm text-gray-500">0 Punkte</div>
+              <div class="text-sm text-gray-500">0 Points</div>
             </div>
           </div>
           
@@ -106,9 +106,9 @@
       <!-- Punkteübersicht -->
       <section class="card bg-white rounded-lg p-6 mb-6">
         <div class="flex justify-between items-center mb-4">
-          <h2 class="text-xl font-semibold text-gray-700">Aktuelle Punkte</h2>
+          <h2 class="text-xl font-semibold text-gray-700">Current Points</h2>
           <button id="resetAll" class="text-sm bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-            Alles zurücksetzen
+            Reset All
           </button>
         </div>
         
@@ -119,7 +119,7 @@
       
       <!-- Verlauf -->
       <section class="card bg-white rounded-lg p-6">
-        <h2 class="text-xl font-semibold mb-4 text-gray-700">Verlauf</h2>
+        <h2 class="text-xl font-semibold mb-4 text-gray-700">History</h2>
         
         <div id="history" class="divide-y divide-gray-200">
           <!-- Wird per JavaScript befüllt -->
@@ -130,7 +130,7 @@
 
   <script>
     // Datenstruktur
-    let players = JSON.parse(localStorage.getItem('rommePlayers')) || ['Max', 'Anna', 'Tom', 'Lisa'];
+    let players = JSON.parse(localStorage.getItem('rommePlayers')) || [];
     let points = JSON.parse(localStorage.getItem('rommePoints')) || {};
     let history = JSON.parse(localStorage.getItem('rommeHistory')) || [];
     
@@ -192,7 +192,7 @@
               </svg>
             </button>
           </div>
-          <span class="font-bold ${points[player] >= 100 ? 'text-red-600' : 'text-gray-800'}">${points[player]} Punkte</span>
+          <span class="font-bold ${points[player] >= 100 ? 'text-red-600' : 'text-gray-800'}">${points[player]} Points</span>
         `;
         currentPointsDiv.appendChild(pointItem);
       });
@@ -210,7 +210,7 @@
             <span class="font-medium">${item.player}</span>
             <span class="text-gray-600 text-sm">${formatDate(new Date(item.timestamp))}</span>
           </div>
-          <div class="text-gray-700 mt-1">+${item.points} Punkte (Gesamt: ${item.totalPoints})</div>
+          <div class="text-gray-700 mt-1">+${item.points} Points (Total: ${item.totalPoints})</div>
         `;
         historyDiv.appendChild(historyItem);
       });
@@ -308,10 +308,9 @@
     });
     
     resetAllBtn.addEventListener('click', () => {
-      if (confirm('Möchtest du wirklich alle Punkte und den Verlauf zurücksetzen?')) {
-        players = ['Max', 'Anna', 'Tom', 'Lisa'];
+      if (confirm('Do you really want to reset ALL data?\nThis will delete all players, points and history!')) {
+        players = [];
         points = {};
-        players.forEach(player => { points[player] = 0; });
         history = [];
         
         saveData();
@@ -323,7 +322,7 @@
     function removePlayer(playerToRemove) {
       const player = playerToRemove || document.getElementById('removePlayerSelect').value;
       
-      if (player && confirm(`${player} wirklich entfernen?\nAlle Punkte dieses Spielers werden gelöscht!`)) {
+      if (player && confirm(`Really remove ${player}?\nAll their points will be deleted!`)) {
         players = players.filter(p => p !== player);
         delete points[player];
         history = history.filter(h => h.player !== player);
@@ -366,6 +365,13 @@
 
     // App initialisieren
     document.addEventListener('DOMContentLoaded', init);
+    
+    // Clear data when page closes
+    window.addEventListener('beforeunload', function() {
+      localStorage.removeItem('rommePlayers');
+      localStorage.removeItem('rommePoints');
+      localStorage.removeItem('rommeHistory');
+    });
   </script>
 </body>
 </html>
